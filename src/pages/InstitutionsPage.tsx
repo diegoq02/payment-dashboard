@@ -1,10 +1,32 @@
 import type { FC } from 'react'
+import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { ArrowUpRight, ArrowDownRight, Trophy, AlertTriangle, Building2 } from 'lucide-react'
 import { institutionsData } from '../data/mockPayments'
+import { peerGroupInstitutions } from '../data/mockPeerGroups'
+import { PeerScatterChart } from '../components/charts/PeerScatterChart'
+import { PeerRadarChart } from '../components/charts/PeerRadarChart'
+import { ZScoreChart } from '../components/charts/ZScoreChart'
+import { AlertStream } from '../components/shared/AlertStream'
+import { useMemo } from 'react'
 
 export const InstitutionsPage: FC = () => {
-  // TODO: Add metric selector support
+  const [selectedInstitution, setSelectedInstitution] = useState('bcp')
+  const [selectedPeerGroup] = useState(['bbva', 'interbank', 'scotiabank', 'banbif'])
+  
+  // Predefined peer groups
+  const peerGroups = useMemo(() => ({
+    'bancos-comerciales': peerGroupInstitutions.filter(i => i.sector === 'commercial').map(i => i.id),
+    'mic': peerGroupInstitutions.filter(i => i.group === 'mfi').map(i => i.id),
+    'cooperativas': peerGroupInstitutions.filter(i => i.group === 'coop').map(i => i.id),
+    'digitales': peerGroupInstitutions.filter(i => i.group === 'wallet').map(i => i.id),
+    'custom': selectedPeerGroup,
+  }), [selectedPeerGroup])
+
+  const [activeGroup, setActiveGroup] = useState<keyof typeof peerGroups>('bancos-comerciales')
+  
+  // Update peer group when active group changes
+  const currentPeerGroup = peerGroups[activeGroup]
 
   // Transform data for charts
   const chartData = institutionsData.map(inst => ({
@@ -29,7 +51,57 @@ export const InstitutionsPage: FC = () => {
         </p>
       </div>
 
-      {/* Summary Cards */}
+      {/* Alert Stream */}
+      <AlertStream maxAlerts={5} />
+
+      {/* Peer Selector */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Grupo Peer</h3>
+            <p className="text-sm text-gray-500 mt-1">Selecciona la institución y su grupo comparativo</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <select
+              value={selectedInstitution}
+              onChange={(e) => setSelectedInstitution(e.target.value)}
+              className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              {peerGroupInstitutions.map(inst => (
+                <option key={inst.id} value={inst.id}>{inst.name}</option>
+              ))}
+            </select>
+            <select
+              value={activeGroup}
+              onChange={(e) => setActiveGroup(e.target.value as keyof typeof peerGroups)}
+              className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="bancos-comerciales">Bancos Comerciales</option>
+              <option value="mic">MICs</option>
+              <option value="cooperativas">Cooperativas</option>
+              <option value="digitales">Digitales</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Peer Analysis Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <PeerScatterChart />
+        <PeerRadarChart 
+          institutionId={selectedInstitution}
+          peerGroupIds={currentPeerGroup}
+        />
+      </div>
+
+      {/* Z-Score Timeline */}
+      <ZScoreChart 
+        institutionId={selectedInstitution}
+        peerGroupIds={currentPeerGroup}
+      />
+
+      {/* Traditional Overview (kept for continuity) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <div className="flex items-center space-x-3 mb-2">
@@ -128,52 +200,6 @@ export const InstitutionsPage: FC = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900">Ranking de Instituciones</h3>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institución</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Market Share</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Crecimiento</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Operaciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {sortedByMarketShare.map((inst) => (
-                <tr key={inst.name} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-3 h-3 rounded-full mr-3" 
-                        style={{ backgroundColor: inst.color }}
-                      />
-                      <span className="text-sm font-medium text-gray-900">{inst.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">
-                    {inst.marketShare}%
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className={`flex items-center justify-end ${inst.growth >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                      {inst.growth >= 0 ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
-                      <span className="text-sm font-medium">{Math.abs(inst.growth)}%</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-600">
-                    {inst.operations.toLocaleString('es-PE')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

@@ -10,6 +10,13 @@ export interface PaymentMetric {
   avgTicket: number;
 }
 
+export interface PeaDataPoint {
+  month: string;
+  date: string;
+  pea: number; // in thousands
+  year: number;
+}
+
 export interface Institution {
   id: string;
   name: string;
@@ -31,24 +38,63 @@ export interface FxDataPoint {
   event?: string;
 }
 
-export interface ChartTheme {
-  primary: string;
-  secondary: string;
-  success: string;
-  warning: string;
-  danger: string;
-  muted: string;
-  grid: string;
-  tooltipBg: string;
+export interface DigitalPaymentPerCapita {
+  month: string;
+  date: string;
+  year: number;
+  totalDigital: number; // Yape + Plin + Other
+  pea: number;
+  perCapita: number;
+  cce: number;
 }
 
-export const defaultChartTheme: ChartTheme = {
-  primary: '#2563EB',
-  secondary: '#7C3AED',
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  muted: '#F1F5F9',
-  grid: '#E2E8F0',
-  tooltipBg: '#FFFFFF',
-};
+// ───── Peer Analysis Types ─────
+
+export interface PeerGroupInstitution {
+  id: string;
+  name: string;
+  group: 'bank' | 'mfi' | 'coop' | 'wallet';
+  sector: 'commercial' | 'savings' | 'digital';
+  color: string;
+  monthlyMetrics: MonthlyPeerMetric[];
+  anomalyScores: AnomalyScore[];
+}
+
+export interface MonthlyPeerMetric {
+  month: string;
+  date: string;
+  transfersCce: number;
+  transfersImmediate: number;
+  totalAmountK: number; // in thousands
+  totalOps: number;
+  avgTicket: number;
+  digitalShare: number; // (Yape + Plin) / Total
+  yape: number;
+  plin: number;
+  other: number;
+}
+
+export interface AnomalyScore {
+  month: string;
+  date: string;
+  zScoreCce: number;
+  zScoreDigital: number;
+  isAnomalous: boolean;
+  anomalyType: 'spike' | 'drop' | 'normal';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface AlertCard {
+  id: string;
+  timestamp: string;
+  institution: string;
+  institutionId: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  metric: string;
+  observed: number;
+  peerAvg: number;
+  peerStd: number;
+  zScore: number;
+  explanation: string;
+  peerComparison: string[];
+}

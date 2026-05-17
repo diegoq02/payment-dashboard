@@ -18,9 +18,9 @@ export const Sidebar: FC = () => {
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">SBS</span>
+            <span className="text-white font-bold text-sm">PS</span>
           </div>
-          <span className="font-semibold text-gray-800">SBS Pagos</span>
+          <span className="font-semibold text-gray-800">Payment System</span>
         </div>
       </div>
 

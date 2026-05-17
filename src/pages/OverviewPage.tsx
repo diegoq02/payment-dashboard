@@ -1,7 +1,8 @@
 import type { FC } from 'react'
 import { KpiCard } from '../components/shared/KpiCard'
 import { StackedAreaChart } from '../components/charts/StackedAreaChart'
-import { paymentData } from '../data/mockPayments'
+import { DigitalPaymentsPerCapita } from '../components/charts/DigitalPaymentsPerCapita'
+import { paymentDataExtended } from '../data/mockPaymentsExtended'
 import { Activity, DollarSign, CreditCard, BarChart3 } from 'lucide-react'
 
 const PAYMENT_COLORS = {
@@ -19,6 +20,7 @@ const kpiData = [
     sparkline: [10, 15, 12, 20, 25, 22, 30],
     color: '#2563EB',
     icon: Activity,
+    dataKey: 'totalOperations',
   },
   {
     title: 'Monto Total',
@@ -27,6 +29,7 @@ const kpiData = [
     sparkline: [12, 18, 15, 22, 28, 25, 35],
     color: '#10B981',
     icon: DollarSign,
+    dataKey: 'totalAmount',
   },
   {
     title: 'N° de Operaciones',
@@ -35,6 +38,7 @@ const kpiData = [
     sparkline: [20, 18, 15, 10, 12, 8, 5],
     color: '#8B5CF6',
     icon: CreditCard,
+    dataKey: 'totalOperations',
   },
   {
     title: 'Ticket Promedio',
@@ -43,6 +47,7 @@ const kpiData = [
     sparkline: [5, 8, 12, 10, 15, 18, 20],
     color: '#F59E0B',
     icon: BarChart3,
+    dataKey: 'avgTicket',
   },
 ]
 
@@ -67,6 +72,7 @@ export const OverviewPage: FC = () => {
             change={kpi.change}
             sparklineData={kpi.sparkline}
             color={kpi.color}
+            dataKey={kpi.dataKey}
           />
         ))}
       </div>
@@ -82,11 +88,14 @@ export const OverviewPage: FC = () => {
           </p>
         </div>
         <StackedAreaChart
-          data={paymentData}
+          data={paymentDataExtended}
           keys={['yape', 'plin', 'cce', 'other']}
           colors={[PAYMENT_COLORS.yape, PAYMENT_COLORS.plin, PAYMENT_COLORS.cce, PAYMENT_COLORS.other]}
         />
       </div>
+
+      {/* Digital Payments per Capita */}
+      <DigitalPaymentsPerCapita />
     </div>
   )
 }
