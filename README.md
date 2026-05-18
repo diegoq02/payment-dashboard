@@ -1,4 +1,4 @@
-# Supervisión de Pagos SBS – Peruvian Fintech Analytics Dashboard
+# Peruvian Fintech Analytics Dashboard
 
 > **Production-grade monitoring platform for Peruvian payment system oversight**
 > Inspired by: Tremor, Stripe, Ramp, Linear & Bloomberg Terminal
@@ -13,7 +13,7 @@
 
 ## 📐 What Is This?
 
-A unified **three-module** analytics platform for the **Superintendencia de Banca, Seguros y AFP (SBS)** of Peru. It empowers financial supervisors, analysts, and executives to monitor, compare, and detect anomalies across:
+A unified **three-module** analytics platform for Peruvian payment system oversight. It empowers financial supervisors, analysts, and executives to monitor, compare, and detect anomalies across:
 
 1.  **Sistema de Pagos** (Payment Channels: CCE, Yape, Plin, digital wallets)
 2.  **Instituciones Financieras** (Per-bank performance, market share, peer analysis)
@@ -33,7 +33,7 @@ A unified **three-module** analytics platform for the **Superintendencia de Banc
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Dashboard SBS                         │
+│                        Dashboard                             │
 ├─────────────────────────────────────────────────────────────┤
 │  Frontend (React 18 + TypeScript)                            │
 │  ├── Module 1: Resumen Ejecutivo                             │
@@ -57,7 +57,7 @@ A unified **three-module** analytics platform for the **Superintendencia de Banc
 │  ├── Mock Peer Groups (Anomaly-injected)                    │
 │  ├── Mock FX Rates (2016-2026)                              │
 │  ├── Mock PEA (16.8M → 18.5M, seasonal)                   │
-│  └── Ready for BCRP API integration 🌐                     │
+│  └── Ready for external API integration 🌐                 │
 ├─────────────────────────────────────────────────────────────┤
 │  Backend Skeleton (To be implemented)                         │
 │  ├── Java Spring Boot (REST API)                            │
@@ -71,85 +71,84 @@ A unified **three-module** analytics platform for the **Superintendencia de Banc
 ## 🗂 Directory Structure
 
 ```
-dashboard-sbs/
-├── public/                          # Static assets (favicon, icons)
+dashboard-sbs/                          # ← THIS IS YOUR ROOT DIRECTORY
+├── public/                            # Static assets (favicon, icons)
+│   └── vite.svg                       # Vite logo (replace with your own)
 ├── src/
 │   ├── components/
-│   │   ├── charts/                  # All Recharts-based graph components
+│   │   ├── charts/                    # All Recharts-based graph components
 │   │   │   ├── DigitalPaymentsPerCapita.tsx   # 📊 New: Pagos per Cápita
 │   │   │   ├── PeerRadarChart.tsx             # 🎯 Institution fingerprint
 │   │   │   ├── PeerScatterChart.tsx           # 🔍 Scatter plot analysis
 │   │   │   ├── SparklineChart.tsx             # Mini line charts
 │   │   │   ├── StackedAreaChart.tsx           # Payment composition
-│   │   │   └── ZScoreChart.tsx                # ⚠️ Anomaly timeline
-│   │   ├── layout/                  # Shell components
-│   │   │   ├── DashboardLayout.tsx  # Main layout (Sidebar + Header + Content)
-│   │   │   ├── Header.tsx           # Top navbar (search, notifications)
-│   │   │   └── Sidebar.tsx          # Navigation (Resumen, Instituciones, FX)
-│   │   └── shared/                  # Reusable UI components
-│   │       ├── AlertStream.tsx      # 🚨 Anomaly alert feed
-│   │       ├── KpiCard.tsx          # Expandable KPI card with sparkline
-│   │       └── KpiCardExpanded.tsx  # Detail view for expanded KPI
-│   ├── data/                        # 🧪 All mock data generators
-│   │   ├── mockPayments.ts          # Original 2024-2026 data
-│   │   ├── mockPaymentsExtended.ts  # 📅 Extended 2013-2026 data
-│   │   ├── mockPea.ts               # 👥 Peruvian PEA (economically active population)
-│   │   └── mockPeerGroups.ts        # 🏦 Peer group institutions with anomaly injection
-│   ├── pages/                       # Main application pages
-│   │   ├── OverviewPage.tsx         # 📍 Resumen Ejecutivo (Module 1)
-│   │   ├── InstitutionsPage.tsx     # 🏦 Instituciones Financieras (Module 2)
-│   │   └── FxMarketPage.tsx         # 💱 Mercado Cambiario (Module 3)
+│   │   │   └── ZScoreChart.tsx                # Anomaly timeline
+│   │   ├── layout/                    # Shell components
+│   │   │   ├── DashboardLayout.tsx    # Main layout (Sidebar + Header + Content)
+│   │   │   ├── Header.tsx             # Top navbar (search, notifications)
+│   │   │   └── Sidebar.tsx            # Navigation (Resumen, Instituciones, FX)
+│   │   └── shared/                    # Reusable UI components
+│   │       ├── AlertStream.tsx        # 🚨 Anomaly alert feed
+│   │       ├── KpiCard.tsx            # Expandable KPI card with sparkline
+│   │       ├── KpiCardExpanded.tsx    # Detail view for expanded KPI
+│   ├── data/                          # 🧪 All mock data generators
+│   │   ├── mockPayments.ts            # Original 2024-2026 data
+│   │   ├── mockPaymentsExtended.ts    # Extended 2013-2026 data
+│   │   ├── mockPea.ts                 # Peruvian PEA (economically active population)
+│   │   └── mockPeerGroups.ts          # Peer group institutions with anomaly injection
+│   ├── pages/                         # Main application pages
+│   │   ├── OverviewPage.tsx           # 📍 Resumen Ejecutivo (Module 1)
+│   │   ├── InstitutionsPage.tsx       # 🏦 Instituciones Financieras (Module 2)
+│   │   └── FxMarketPage.tsx           # 💱 Mercado Cambiario (Module 3)
 │   ├── types/
-│   │   └── dashboard.ts             # TypeScript interfaces (PaymentMetric, Institution, FxDataPoint, etc.)
+│   │   └── dashboard.ts             # TypeScript interfaces
 │   ├── lib/
-│   │   └── dataUtils.ts             # Utilities (aggregateToYearly, etc.)
-│   ├── index.css                    # Tailwind base styles
-│   ├── main.tsx                     # Entry point (ReactDOM.createRoot)
-│   └── App.tsx                      # Router setup + Routes
-├── backend/                         # 🚀 Future backend skeleton
+│   │   └── dataUtils.ts              # Utilities (aggregateToYearly, etc.)
+│   ├── index.css                      # Tailwind base styles
+│   ├── main.tsx                       # Entry point (ReactDOM.createRoot)
+│   └── App.tsx                        # Router setup + Routes
+├── backend/                           # 🚀 Future backend skeleton
 │   ├── java/
-│   │   └── README.md                # Spring Boot architecture
+│   │   └── README.md                  # Spring Boot architecture
 │   ├── python/
-│   │   └── README.md                # ETL pipeline architecture
-│   └── schema.sql                   # 🗄 PostgreSQL script (tables, indexes, sample data)
+│   │   └── README.md                  # ETL pipeline architecture
+│   └── schema.sql                     # 🗄 PostgreSQL script (tables, indexes, sample data)
 ├── docs/
-│   └── README.md                    # Project documentation
-├── index.html                       # HTML entry point (vite injects JS)
-├── package.json                     # Dependencies & scripts
-├── tailwind.config.js               # Tailwind v3 configuration
-├── vite.config.ts                   # Vite build configuration
-└── eslint.config.js                 # Linting rules
+│   └── README.md                     # Project documentation
+├── index.html                         # HTML entry point (vite injects JS)
+├── package.json                       # Dependencies & scripts
+├── tailwind.config.js                 # Tailwind v3 configuration
+├── vite.config.ts                     # Vite build configuration
+└── eslint.config.js                   # Linting rules
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Prerequisites
+### Prerequisites
 - **Node.js** `>= 18.0.0`
 - **npm** `>= 9.0.0`
 
-### 2. Install & Run
+### Install, Build & Preview
 
 ```bash
-# 1. Navigate to project
+# 1. Navigate to the ROOT DIRECTORY
 cd dashboard-sbs
 
 # 2. Install dependencies
 npm install
 
-# 3. Start development server
+# 3. Start local development (with hot reload)
 npm run dev
+# Opens at → http://localhost:5173
 
-# 4. Open in browser
-# → http://localhost:5173
-```
-
-### 3. Build for Production
-
-```bash
+# 4. Build for production (creates dist/ folder)
 npm run build
-# Output: dist/ directory
+
+# 5. Preview the production build locally
+npx serve dist
+# Opens at → http://localhost:3000
 ```
 
 ---
@@ -189,13 +188,6 @@ npm run build
 - 🟡 **Scotia**: CCE spike +34% (Mar 2025, Z > 3.0)
 - 🔴 **BanBif**: Immediate transfer drop -18% (Jun 2025, Z < -2.2)
 
-**Anomaly Logic**:
-```
-Z = (Institution Value - Peer Mean) / Peer Std Dev
-|Z| > 2.5  → Anomaly detected
-|Z| > 3.5  → Critical severity
-```
-
 ---
 
 ### Module 3: Mercado Cambiario (`/pages/FxMarketPage.tsx`)
@@ -214,7 +206,7 @@ Z = (Institution Value - Peer Mean) / Peer Std Dev
 
 ### Payment System (`mockPaymentsExtended.ts`)
 ```
-Period: 2013-01 → 2026-03  (157 months)
+Period: 2013-01 → 2026-03 (157 months)
 Yape:     Exponential growth (started 2017)
 Plin:     Linear growth (started 2019)
 CCE:      Declining as digital rises
@@ -267,10 +259,44 @@ Font:         Inter (Google Fonts)
 | ✅ Done | Anomaly detection (Z-score) | No |
 | ✅ Done | Peer group comparison | No |
 | ✅ Done | Pagos per Cápita (2013-2026) | No |
-| 🚧 Next | BCRP API integration | Yes (Spring Boot proxy) |
+| 🚧 Next | External API integration | Yes (Spring Boot proxy) |
 | 🚧 Next | Real-time alerts (WS) | Yes (WebSocket) |
 | 🚧 Next | ML anomaly detection | Yes (Python / TensorFlow) |
 | 🚧 Next | Authentication (RBAC) | Yes (JWT) |
+
+---
+
+## 📦 Deployment (Vercel)
+
+### Option A: Vercel CLI
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy from ROOT DIRECTORY (dashboard-sbs/)
+cd /path/to/dashboard-sbs
+vercel --prod
+```
+
+### Option B: Git + Vercel Dashboard
+1. Push code to GitHub
+2. Connect repo at [vercel.com/new](https://vercel.com/new)
+3. Set **Build Command**: `npm run build`
+4. Set **Output Directory**: `dist`
+5. Deploy!
+
+### Option C: Docker (Advanced)
+```dockerfile
+# Dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+EXPOSE 4173
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0"]
+```
 
 ---
 
@@ -289,4 +315,4 @@ MIT – Open for financial supervisors and fintech developers alike.
 
 ---
 
-**Built with ❤️ for Supervisión de Pagos SBS**
+> **Built with ❤️ for Payment System Oversight**

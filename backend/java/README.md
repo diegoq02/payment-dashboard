@@ -1,4 +1,4 @@
-# SBS Dashboard - Backend Architecture
+# Peruvian Payment Analytics - Backend Architecture
 
 ## Technology Stack
 - **Java 17+**

@@ -1,4 +1,4 @@
-# SBS Dashboard - Python ETL Pipeline
+# Peruvian Payment Analytics - Python ETL Pipeline
 
 ## Technology Stack
 - **Python 3.10+**

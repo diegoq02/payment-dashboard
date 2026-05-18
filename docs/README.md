@@ -1,4 +1,4 @@
-# SBS Dashboard - Documentation
+# Peruvian Payment Analytics Dashboard - Documentation
 
 ## Project Overview
 Enterprise-grade financial analytics dashboard for Peruvian payment system supervision.
